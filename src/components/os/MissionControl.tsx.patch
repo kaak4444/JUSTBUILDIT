@@ -1,0 +1,49 @@
+--- src/components/os/MissionControl.tsx
++++ src/components/os/MissionControl.tsx
+@@ -1,8 +1,16 @@
+ import React, { useState, useEffect } from "react";
+-import { Play, Square, Activity, Folder, Plus, ChevronRight, Hash, Clock, Cpu, Layout, FileText, CheckCircle, Database, Bell, Search, Menu } from "lucide-react";
++import { Play, Square, Activity, Folder, Plus, ChevronRight, Hash, Clock, Cpu, Layout, FileText, CheckCircle, Database, Bell, Search, Menu, Brain, Rocket, Package, Settings, BarChart2 } from "lucide-react";
+ import { ArtifactExplorer } from "./ArtifactExplorer";
++import { AIExecutionOrganizerDashboard } from "../AIExecutionOrganizerDashboard";
++import { IntegrationDepartmentView } from "../IntegrationDepartmentView";
++import { ProductionDepartmentView } from "../ProductionDepartmentView";
++import { ProductViewerHub } from "../ProductViewerHub";
++import { PublishingDepartmentView } from "../PublishingDepartmentView";
++import { ResearchCoreV3View } from "../ResearchCoreV3View";
++import { RuntimeIntelligenceDashboard } from "../ril/RuntimeIntelligenceDashboard";
+ 
+ export function MissionControl() {
+-  const [activeView, setActiveView] = useState<"mission" | "artifacts" | "timeline" | "notifications">("mission");
++  const [activeView, setActiveView] = useState<string>("mission");
+   const [sidebarOpen, setSidebarOpen] = useState(true);
++  const [logs, setLogs] = useState<any[]>([]);
++  
++  const addLog = (source: string, message: string, level: any) => {
++    setLogs(prev => [...prev, { source, message, level, timestamp: new Date().toISOString() }]);
++  };
+ 
+   return (
+@@ -21,6 +29,14 @@
+           <NavItem icon={<Activity />} label="Mission" active={activeView === "mission"} onClick={() => setActiveView("mission")} isOpen={sidebarOpen} />
++          <NavItem icon={<Brain />} label="Research" active={activeView === "research"} onClick={() => setActiveView("research")} isOpen={sidebarOpen} />
++          <NavItem icon={<Layout />} label="Production" active={activeView === "production"} onClick={() => setActiveView("production")} isOpen={sidebarOpen} />
++          <NavItem icon={<Rocket />} label="Publishing" active={activeView === "publishing"} onClick={() => setActiveView("publishing")} isOpen={sidebarOpen} />
++          <NavItem icon={<Package />} label="Products" active={activeView === "products"} onClick={() => setActiveView("products")} isOpen={sidebarOpen} />
++          <NavItem icon={<Settings />} label="Integrations" active={activeView === "integrations"} onClick={() => setActiveView("integrations")} isOpen={sidebarOpen} />
++          <NavItem icon={<Database />} label="Orchestrator" active={activeView === "orchestrator"} onClick={() => setActiveView("orchestrator")} isOpen={sidebarOpen} />
++          <NavItem icon={<BarChart2 />} label="Intelligence" active={activeView === "intelligence"} onClick={() => setActiveView("intelligence")} isOpen={sidebarOpen} />
+           <NavItem icon={<Folder />} label="Artifacts" active={activeView === "artifacts"} onClick={() => setActiveView("artifacts")} isOpen={sidebarOpen} />
+           <NavItem icon={<Clock />} label="Timeline" active={activeView === "timeline"} onClick={() => setActiveView("timeline")} isOpen={sidebarOpen} />
+           <NavItem icon={<Bell />} label="Alerts" active={activeView === "notifications"} onClick={() => setActiveView("notifications")} isOpen={sidebarOpen} />
+@@ -51,6 +67,27 @@
+         <div className="flex-1 overflow-hidden relative">
+           {activeView === "mission" && <ActiveMission />}
++          {activeView === "research" && <div className="h-full overflow-y-auto"><ResearchCoreV3View researchV3={null} /></div>}
++          {activeView === "production" && <div className="h-full overflow-y-auto"><ProductionDepartmentView theme="dark" logs={logs} addLog={addLog} /></div>}
++          {activeView === "publishing" && <div className="h-full overflow-y-auto"><PublishingDepartmentView theme="dark" logs={logs} addLog={addLog} /></div>}
++          {activeView === "products" && <div className="h-full overflow-y-auto"><ProductViewerHub /></div>}
++          {activeView === "integrations" && <div className="h-full overflow-y-auto"><IntegrationDepartmentView theme="dark" logs={logs} addLog={addLog} /></div>}
++          {activeView === "orchestrator" && <div className="h-full overflow-y-auto"><AIExecutionOrganizerDashboard /></div>}
++          {activeView === "intelligence" && <div className="h-full overflow-y-auto"><RuntimeIntelligenceDashboard /></div>}
+           {activeView === "artifacts" && (
